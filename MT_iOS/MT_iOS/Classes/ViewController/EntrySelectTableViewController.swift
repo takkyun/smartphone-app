@@ -63,14 +63,14 @@ class EntrySelectTableViewController: BaseTableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let previous = object.list.indexOf(selected);
         if previous != indexPath.row {
+            selected =  object.list[indexPath.row]
+            object.selected = selected
+            object.isDirty = true
+
             let prevRow = NSIndexPath(forRow: previous!, inSection: indexPath.section)
             tableView.beginUpdates();
             tableView.reloadRowsAtIndexPaths([indexPath, prevRow], withRowAnimation: .Fade)
             tableView.endUpdates();
-
-            selected =  object.list[indexPath.row]
-            object.selected = selected
-            object.isDirty = true
         }
         else {
             tableView.deselectRowAtIndexPath(indexPath, animated: true);

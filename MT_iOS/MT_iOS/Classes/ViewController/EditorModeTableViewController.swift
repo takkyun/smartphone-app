@@ -66,11 +66,12 @@ class EditorModeTableViewController: UITableViewController {
         let previous = NSIndexPath(forRow: selected.rawValue, inSection: indexPath.section);
 
         if previous.row != indexPath.row {
+            selected = Entry.EditMode(rawValue: indexPath.row)!
+
             tableView.beginUpdates();
             tableView.reloadRowsAtIndexPaths([indexPath, previous], withRowAnimation: .Fade)
             tableView.endUpdates();
 
-            selected = Entry.EditMode(rawValue: indexPath.row)!
             delegate?.editorModeDone(self, selected: selected)
         }
         else {

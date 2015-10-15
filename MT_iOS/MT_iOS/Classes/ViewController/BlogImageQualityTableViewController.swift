@@ -72,11 +72,12 @@ class BlogImageQualityTableViewController: BaseTableViewController {
         let previous = NSIndexPath(forRow: selected, inSection: indexPath.section);
 
         if previous.row != indexPath.row {
+            selected = indexPath.row
+
             tableView.beginUpdates();
             tableView.reloadRowsAtIndexPaths([indexPath, previous], withRowAnimation: .Fade)
             tableView.endUpdates();
 
-            selected = indexPath.row
             delegate?.blogImageQualityDone(self, selected: selected)
         }
         else {
