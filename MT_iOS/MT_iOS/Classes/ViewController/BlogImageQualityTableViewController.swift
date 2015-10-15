@@ -22,8 +22,6 @@ class BlogImageQualityTableViewController: BaseTableViewController {
         
         self.title = NSLocalizedString("Image Quality", comment: "Image Quality")
         self.tableView.backgroundColor = Color.tableBg
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonPushed:")
     }
     
     override func didReceiveMemoryWarning() {
@@ -71,13 +69,18 @@ class BlogImageQualityTableViewController: BaseTableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        selected = indexPath.row
-        
-        self.tableView.reloadData()
-    }
-    
-    @IBAction func doneButtonPushed(sender: AnyObject) {
-        self.navigationController?.popViewControllerAnimated(true)
-        delegate?.blogImageQualityDone(self, selected: selected)
+        let previous = NSIndexPath(forRow: selected, inSection: indexPath.section);
+
+        if previous.row != indexPath.row {
+            tableView.beginUpdates();
+            tableView.reloadRowsAtIndexPaths([indexPath, previous], withRowAnimation: .Fade)
+            tableView.endUpdates();
+
+            selected = indexPath.row
+            delegate?.blogImageQualityDone(self, selected: selected)
+        }
+        else {
+            tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        }
     }
 }
