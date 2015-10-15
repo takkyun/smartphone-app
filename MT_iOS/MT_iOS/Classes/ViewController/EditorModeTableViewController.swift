@@ -24,7 +24,6 @@ class EditorModeTableViewController: UITableViewController {
         
         selected = oldSelected
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "saveButtonPushed:")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: "backButtonPushed:")
         
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
@@ -64,25 +63,25 @@ class EditorModeTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        selected = Entry.EditMode(rawValue: indexPath.row)!
-        
-        self.tableView.reloadData()
+        let previous = NSIndexPath(forRow: selected.rawValue, inSection: indexPath.section);
+
+        if previous.row != indexPath.row {
+            tableView.beginUpdates();
+            tableView.reloadRowsAtIndexPaths([indexPath, previous], withRowAnimation: .Fade)
+            tableView.endUpdates();
+
+            selected = Entry.EditMode(rawValue: indexPath.row)!
+            delegate?.editorModeDone(self, selected: selected)
+        }
+        else {
+            tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        }
     }
 
     // MARK: - actions
 
-    @IBAction func saveButtonPushed(sender: UIBarButtonItem) {
-        delegate?.editorModeDone(self, selected: selected)
-        self.navigationController?.popViewControllerAnimated(true)
-    }
-    
     @IBAction func backButtonPushed(sender: UIBarButtonItem) {
-        if selected == oldSelected {
-            self.navigationController?.popViewControllerAnimated(true)
-            return
-        }
-        
-        Utils.confrimSave(self)
+        self.navigationController?.popViewControllerAnimated(true)
     }
 
 }
