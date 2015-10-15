@@ -18,7 +18,6 @@ class EntrySelectTableViewController: BaseTableViewController {
         
         selected = object.selected
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "saveButtonPushed:")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: "backButtonPushed:")
 
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
@@ -62,24 +61,24 @@ class EntrySelectTableViewController: BaseTableViewController {
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        selected =  object.list[indexPath.row]
-        
-        self.tableView.reloadData()
-    }
-    
-    @IBAction func saveButtonPushed(sender: UIBarButtonItem) {
-        object.selected = selected
-        object.isDirty = true
-        self.navigationController?.popViewControllerAnimated(true)
-    }
-    
-    @IBAction func backButtonPushed(sender: UIBarButtonItem) {
-        if selected == object.selected {
-            self.navigationController?.popViewControllerAnimated(true)
-            return
+        let previous = object.list.indexOf(selected);
+        if previous != indexPath.row {
+            let prevRow = NSIndexPath(forRow: previous!, inSection: indexPath.section)
+            tableView.beginUpdates();
+            tableView.reloadRowsAtIndexPaths([indexPath, prevRow], withRowAnimation: .Fade)
+            tableView.endUpdates();
+
+            selected =  object.list[indexPath.row]
+            object.selected = selected
+            object.isDirty = true
         }
-        
-        Utils.confrimSave(self)
+        else {
+            tableView.deselectRowAtIndexPath(indexPath, animated: true);
+        }
+    }
+
+    @IBAction func backButtonPushed(sender: UIBarButtonItem) {
+        self.navigationController?.popViewControllerAnimated(true)
     }
 
 }
